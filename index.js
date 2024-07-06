@@ -76,7 +76,15 @@ app.delete('/jokes/:id', (req, res) => {
   }
 });
 //8. DELETE All jokes
-app.delete('/jokes/all', (req, res) => {});
+app.delete('/all', (req, res) => {
+  const key = req.query.key;
+  if (key === masterkey) {
+    jokes = [];
+    res.sendStatus(200);
+  } else {
+    res.status(404).json({ error: `No jokes were deleted.` });
+  }
+});
 app.listen(port, () => {
   console.log(`Listening on Port:${port},http://localhost:${port}`);
 });
