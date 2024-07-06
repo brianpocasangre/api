@@ -37,13 +37,46 @@ app.post('/jokes', (req, res) => {
 });
 
 //5. PUT a joke
+app.put('/jokes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const replacementJoke = {
+    id: id,
+    jokeText: req.body.text,
+    jokeType: req.body.type,
+  };
+  const index = jokes.findIndex((joke) => joke.id === id);
+  jokes[index] = replacementJoke;
+  res.json(replacementJoke);
+});
 
 //6. PATCH a joke
-
+app.patch('/jokes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const currentJoke = jokes.find((joke) => joke.id === id);
+  const newJoke = {
+    id: id,
+    jokeText: req.body.text || currentJoke.jokeText,
+    jokeType: req.body.type || currentJoke.jokeType,
+  };
+  const index = jokes.findIndex((joke) => joke.id === id);
+  jokes[index] = newJoke;
+  res.json(newJoke);
+});
 //7. DELETE Specific joke
-
+app.delete('/jokes/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = jokes.findIndex((joke) => joke.id === id);
+  if (index > -1) {
+    jokes.splice(index, 1);
+    res.sendStatus(200);
+  } else {
+    res
+      .status(404)
+      .json({ error: `Joke with id: ${id} not found. No jokes were deleted.` });
+  }
+});
 //8. DELETE All jokes
-
+app.delete('/jokes/all', (req, res) => {});
 app.listen(port, () => {
   console.log(`Listening on Port:${port},http://localhost:${port}`);
 });
